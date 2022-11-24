@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace Game
 {
+    public class TODOs
+    {
+        //TODO: определять и уведомлять о коллизиях в т.ч. триггерных с определёнными слоями
+        //TODO: 
+    }
+
     public class TmpInputActionsHandler : MonoBehaviour
     {
 
@@ -102,8 +108,10 @@ namespace Game
 
         private void ApplyGravity()
         {
-            if (_verticalVelocity > -_terminalVelocity)
-                _verticalVelocity += _gravity * Time.deltaTime;
+            _verticalVelocity += _gravity * Time.deltaTime;
+
+            if (_verticalVelocity < -_terminalVelocity)
+                _verticalVelocity = -_terminalVelocity;
         }
 
         private void HandleHorizontalMovement()
