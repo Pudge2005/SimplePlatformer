@@ -21,6 +21,7 @@ namespace Game.Uncategorized
                 typeof(TmpInputActionsConnector),
                 typeof(TmpInputActionsHandler),
                 typeof(Interactor),
+                typeof(Mortal),
             };
 
             foreach (var cmpType in compsToDestroy)

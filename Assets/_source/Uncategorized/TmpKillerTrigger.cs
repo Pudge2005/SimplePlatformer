@@ -16,15 +16,20 @@ namespace Game.Uncategorized
             _activationAnimParamID = Animator.StringToHash(_activationAnimParamName);
         }
 
-        public void KillPlayer()
+        public void KillPlayer(GameObject player)
         {
             _animator.SetTrigger(_activationAnimParamID);
-            GameUi.RestartScreen.Show("Вы проигрователь!", Color.red);
+            GameUi.RestartScreen.Show("Вы проигрыватель!", Color.red);
+
+            if (player.TryGetComponent<Mortal>(out var mortal))
+            {
+                mortal.Kill();
+            }
         }
 
         protected override void HandleInteraction(GameObject interactor)
         {
-            KillPlayer();
+            KillPlayer(interactor);
         }
     }
 }

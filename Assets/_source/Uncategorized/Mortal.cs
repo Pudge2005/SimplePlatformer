@@ -1,6 +1,8 @@
-﻿namespace Game.Uncategorized
+﻿using UnityEngine;
+
+namespace Game.Uncategorized
 {
-    public abstract class Mortal : IMortal
+    public abstract class Mortal : MonoBehaviour, IMortal
     {
         public void Kill()
         {
