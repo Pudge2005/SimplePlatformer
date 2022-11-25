@@ -1,5 +1,7 @@
 ﻿using System;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Game
@@ -28,7 +30,6 @@ namespace Game
         [SerializeField] private LayerMask _groundLayers = 1;
 
         private const float _terminalVelocity = 53f;
-        private const float _threshold = 0.01f;
         private const float _defaultVerticalVelocity = -2f;
 
         private float _verticalVelocity;
@@ -59,6 +60,7 @@ namespace Game
             HandleHorizontalMovement();
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Handles.color = Color.cyan;
@@ -66,7 +68,7 @@ namespace Game
             pos.y += _groundCheckOffset;
             Handles.DrawWireDisc(pos, new Vector3(0, 0, -1), _groundCheckRadius);
         }
-
+#endif
 
         private bool CheckGroundedState()
         {

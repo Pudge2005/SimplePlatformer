@@ -27,9 +27,10 @@ namespace Game.Uncategorized
             }
         }
 
-        protected override void HandleInteraction(GameObject interactor)
+        protected override bool TryHandleInteraction(GameObject interactor)
         {
             KillPlayer(interactor);
+            return true;
         }
     }
 }

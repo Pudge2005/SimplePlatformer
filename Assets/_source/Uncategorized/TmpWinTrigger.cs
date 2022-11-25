@@ -5,10 +5,11 @@ namespace Game.Uncategorized
 {
     public class TmpWinTrigger : Interactable2D
     {
-        protected override void HandleInteraction(GameObject interactor)
+        protected override bool TryHandleInteraction(GameObject interactor)
         {
             ShowWinScreen();
             DestroyPlayerComponents(interactor);
+            return true;
         }
 
         private void DestroyPlayerComponents(GameObject hypotheticalPlayerGameObject)
