@@ -8,10 +8,12 @@ namespace Game
         private sealed class InternalState : ICharacterController2DState
         {
             public Memory<Collider2D> CollisionsInternal { get; set; }
+            public Memory<Collider2D> TriggersInternal { get; set; }
 
             public CollisionFlags CollisionFlags { get; set; }
 
             public ReadOnlyMemory<Collider2D> Collisions => CollisionsInternal;
+            public ReadOnlyMemory<Collider2D> Triggers => TriggersInternal;
 
 
             public event Action<ICharacterController2DState> OnStateUpdated;
@@ -27,9 +29,10 @@ namespace Game
         [SerializeField] private CapsuleCollider2D _capsuleCollider;
 
         private Transform _tr;
-        private readonly InternalState _internalState;
+        private readonly InternalState _internalState = new();
 
-        private static ContactFilter2D _contactFilter;
+        private static ContactFilter2D _collisionsContactFilter;
+        private static ContactFilter2D _triggersContactFilter; //tmp
         private static Collider2D[] _collisionsBuffer;
         private static Memory<Collider2D> _collisionsMemBuffer;
 
@@ -40,12 +43,18 @@ namespace Game
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Init()
         {
-            _contactFilter = new()
+            _collisionsContactFilter = new()
             {
                 layerMask = 1, //DEBUG ONLY
                 useDepth = false,
                 useLayerMask = true,
                 useTriggers = false,
+            };
+
+            _triggersContactFilter = new()
+            {
+                useLayerMask = false,
+                useTriggers = true,
             };
 
             _collisionsBuffer = new Collider2D[1024 * 8];
@@ -65,11 +74,25 @@ namespace Game
         {
             _tr.position += (Vector3)move;
             ResolveCollisions();
+            DetectTriggers();
+            _internalState.UpdateState();
+        }
+
+        private void DetectTriggers()
+        {
+            int count = OverlapCollider(_triggersContactFilter);
+
+            _internalState.TriggersInternal = _collisionsMemBuffer[..count];
         }
 
         private int DetectCollisions()
         {
-            return _capsuleCollider.OverlapCollider(_contactFilter, _collisionsBuffer);
+            return OverlapCollider(_collisionsContactFilter);
+        }
+
+        private int OverlapCollider(ContactFilter2D filter)
+        {
+            return _capsuleCollider.OverlapCollider(filter, _collisionsBuffer);
         }
 
         private void ResolveCollisions()
@@ -79,7 +102,9 @@ namespace Game
             if (collisionsCount == 0)
                 return;
 
-            var span = _collisionsMemBuffer[..collisionsCount].Span;
+            var mem = _collisionsMemBuffer[..collisionsCount];
+            _internalState.CollisionsInternal = mem;
+            var span = mem.Span;
             var thisCol = _capsuleCollider;
 
             //CollisionFlags cflags = 0;

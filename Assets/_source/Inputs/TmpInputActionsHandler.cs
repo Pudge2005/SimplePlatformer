@@ -6,14 +6,16 @@ namespace Game
 {
     public class TODOs
     {
-        //TODO: определять и уведомлять о коллизиях в т.ч. триггерных с определёнными слоями
+        //vTODO: определять и уведомлять о коллизиях в т.ч. триггерных с определёнными слоями (todo done)
+        //TODO: динамически определять битмаску физ. слоёв, основываясь на слоях, интересующих подписчиков контроллера
         //TODO: 
     }
-
     public class TmpInputActionsHandler : MonoBehaviour
     {
-
         [SerializeField] private TmpCharacterController2D _controller;
+        [SerializeField] private Transform _characterVisual;
+        [SerializeField] private bool _facingLeftByDefault = false;
+
 
         [Header("DEBUG character stats")]
         [SerializeField] private float _moveSpeed = 2f;
